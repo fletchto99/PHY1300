@@ -1,0 +1,378 @@
+\documentclass[fleqn, 12pt]{article}
+
+% packages %
+\usepackage[includeheadfoot,headheight=15pt,margin=0.5in,left=1in,right=1in,headsep=10pt]{geometry} % page margins %
+\usepackage{mathtools, amssymb} % math %
+\usepackage{tabularx, multirow} % tables %
+\usepackage{minted} % code %
+\usepackage{graphicx} % graphics %
+\usepackage{enumerate} % lists %
+\usepackage{adjustbox} % images %
+\usepackage[T1]{fontenc} % fonts %
+\usepackage[protrusion=true,expansion=true]{microtype} % font clarity %
+\usepackage{fancyhdr} % headers and footers %
+\usepackage{lastpage} % reference page numbers %
+\usepackage{color} % colors for code %
+\usepackage{tikz} % for graphs %
+\usepackage{soul} % for strikethroughout %
+\usepackage{upquote} % Fix single quotes %
+\usepackage{etoolbox} % Conditional checks %
+\usepackage[hidelinks]{hyperref} % Hyperlinks %
+\usepackage{indentfirst} % fix indentation - only for essays %
+\usepackage[figure,table]{totalcount} % For counting tables and figures %
+\usepackage[utf8]{inputenc} % Encode as UTF-8 %
+\usepackage{biblatex} % References %
+\usepackage{tocloft} % Table of Contents dots %
+\usepackage{setspace} % double space %
+\addbibresource{references.bib} % bib source %
+
+
+% Document details %
+\newcommand{\university}{University of Ottawa}
+\newcommand{\name}{Matthew Langlois}
+\newcommand{\studentNumber}{7731813}
+\newcommand{\semester}{Winter 2018}
+\newcommand{\assignmentType}{Final Report}
+\newcommand{\assignmentNumber}{}
+\newcommand{\dueDate}{March 29}
+\newcommand{\courseCode}{PHY1300}
+\newcommand{\courseTitle}{The Big Bang and Beyond}
+\newcommand{\essayTitle}{Modern Cryptography in a Quantum World} % only for essays %
+\newcommand{\essaySubtitle}{A Glimpse into what the future holds for Cryptography} % only for essays %
+\newcommand{\essayAbstract}{
+As we shift into a quantum world our cryptographic algorithms will need to be updated to reflect the shift. Modern day cryptographic algorithms will become child's play to the computers the future may bring. It is important to ensure that the methods used for encryption are updated to reflect these changes.
+
+This report analyzes how standard cryptographic algorithms offer security in modern computing. It will determine how modern cryptography stands up in a quantum era. Furthermore it will offer some insight into the future of cryptographic algorithms which will continue to work in a quantum world.
+} % Only for essays -- leave empty for no abstract %
+
+% Center image and diagrams %
+\adjustboxset*{center}
+
+% Code settings %
+\setminted{
+    fontfamily=tt,
+    gobble=0,
+    frame=single,
+    funcnamehighlighting=true,
+    tabsize=4,
+    obeytabs=false,
+    mathescape=false
+    samepage=false,
+    showspaces=false,
+    showtabs =false,
+    texcl=false,
+    breaklines=true,
+}
+
+% inline code %
+\definecolor{codegray}{gray}{0.9}
+\newcommand{\code}[2]{\colorbox{codegray}{\mintinline{#1}{#2}}}
+
+% Code from tile %
+\newcommand{\codefile}{\inputminted}
+
+% Graphing stuff %
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{positioning}
+\usetikzlibrary{matrix}
+\usetikzlibrary{automata}
+
+% Define ceiling and floor functions %
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+% Create set compliment command %
+\newcommand{\setcomp}[1]{{#1}^{\mathsf{c}}}
+
+% Create logic command aliases %
+\newcommand{\limplies}{\rightarrow}
+\newcommand{\nequiv}{\not\equiv}
+\newcommand{\liff}{\leftrightarrow}
+
+% first page header & footer %
+\fancypagestyle{assignment}{
+    \fancyhf{}
+    \renewcommand{\footrulewidth}{0.1mm}
+    \fancyfoot[R]{\assignmentType\text{ }\ifdefempty{\assignmentNumber}{}{\#}\assignmentNumber}
+    \fancyfoot[C]{\thepage \hspace{1pt} of \pageref{LastPage}}
+    \fancyfoot[L]{\courseCode}
+    \renewcommand{\headrulewidth}{0mm}
+}
+
+% Frontmatter for essay page numbering%
+\fancypagestyle{frontmatter}{
+    \fancyhf{}
+    \renewcommand{\footrulewidth}{0.1mm}
+    \fancyfoot[R]{\assignmentType\text{ }\ifdefempty{\assignmentNumber}{}{\#}\assignmentNumber}
+    \fancyfoot[C]{\thepage \hspace{1pt} of \pageref{EndFrontMatter}}
+    \fancyfoot[L]{\courseCode}
+    \fancyhead[L]{\name}
+    \fancyhead[R]{\studentNumber}
+}
+
+% Essay body page numbering %
+\fancypagestyle{body}{
+    \fancyhf{}
+    \renewcommand{\footrulewidth}{0.1mm}
+    \fancyfoot[R]{\assignmentType\text{ }\ifdefempty{\assignmentNumber}{}{\#}\assignmentNumber}
+    \fancyfoot[C]{\thepage \hspace{1pt} of \pageref{LastPage}}
+    \fancyfoot[L]{\courseCode}
+    \fancyhead[L]{\name}
+    \fancyhead[R]{\studentNumber}
+}
+
+% Page header and footers %
+\fancyhf{}
+\renewcommand{\footrulewidth}{0.1mm}
+\fancyfoot[R]{\assignmentType\text{ }\ifdefempty{\assignmentNumber}{}{\#}\assignmentNumber}
+\fancyfoot[C]{\thepage \hspace{1pt} of \pageref{LastPage}}
+\fancyfoot[L]{\courseCode}
+\fancyhead[L]{\name}
+\fancyhead[R]{\studentNumber}
+
+% Apply headers & footer page style %
+\pagestyle{fancy}
+
+% Assignment first page header %
+\newcommand{\beginassignemnt}{
+    % Prevent paragraph indents, this isn't an English assignment! %
+    \newlength\tindent
+    \setlength{\tindent}{\parindent}
+    \setlength{\parindent}{0pt}
+
+    \thispagestyle{assignment}
+    \noindent
+    \courseTitle \hfill \university\\
+    \courseCode \hfill \semester
+    \begin{center}
+        \textbf{\assignmentType\text{ }\ifdefempty{\assignmentNumber}{}{\#}\assignmentNumber}\\
+        \name \hspace{1pt} - \studentNumber\\
+        \dueDate\\
+    \end{center}
+    \vspace{6pt}
+    \hrule
+    \vspace{1.5\headsep}
+}
+
+% Essay titlepage stuff %
+\newcommand{\beginessay}{
+    % Load all citations %
+    \nocite{*}
+
+    % Special numbering for front matter %
+    \pagestyle{frontmatter}
+    \pagenumbering{roman}
+
+    % Titlepage stuff %
+    \begin{center}
+        \normalsize
+        \textsc{\university}\\[5cm]
+        \LARGE \textbf{\MakeUppercase{\essayTitle}}\\[0.5cm]
+        \large \text{ }\essaySubtitle\text{ }\\[10cm] % blank \texts are used for empty subtitles %
+        \normalsize
+        \textsc{\name}\\
+        \textsc{\studentNumber}\\
+        \textsc{\courseCode}\\
+        \textsc{\semester}\\
+        \textsc{\dueDate}
+    \end{center}
+    \thispagestyle{empty}
+    % End title page stuff %
+
+    % Table of Contents %
+    \newpage
+    \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+    \tableofcontents
+    \newpage
+
+    % If more than 1 table/figure show appropriate lists %
+    \iftotalfigures
+        \addcontentsline{toc}{section}{\listfigurename}
+        \listoffigures
+    \fi
+    \iftotaltables
+        \addcontentsline{toc}{section}{\listtablename}
+        \listoftables
+    \fi
+    \doublespacing % Double spacing, if requested
+
+    % Display an abstract if the abstract isn't empty %
+    \ifdefempty{\essayAbstract}{}{
+        \newpage
+        \addcontentsline{toc}{section}{Abstract}
+        \begin{abstract}
+            \essayAbstract
+        \end{abstract}
+
+    }
+    \label{EndFrontMatter}
+    \newpage
+
+    % Reset page numbering %
+    \pagenumbering{arabic}
+    \pagestyle{body}
+}
+
+% Update the bibliography command to add its self to the references
+\let\oldprintbib\printbibliography
+\renewcommand{\printbibliography}{
+    \newpage
+    \oldprintbib
+    \addcontentsline{toc}{section}{References}
+    \newpage
+}
+
+\newcommand{\printappendix}{
+    \appendix
+    \section{Appendix}
+}
+
+% Begin the document %
+\begin{document}
+
+% Generates the frontmatter for the essay %
+\beginessay
+
+\section{Introduction}
+
+Everyday millions of people around the world rely on computers to provide secure communication over the internet. Often times we take it for granted that the underlying cryptography algorithms just work - keeping our personal information secure in transit. Every time a website is visited with a green lock we trust, without hesitation, that our information will be secure from end to end.
+
+ As we slowly shift to a quantum world this may no longer be the case. Today's strong cryptographic algorithms will become weak to tomorrow's computers. Quantum will render extremely difficult tasks much easier to compute.
+
+\section{Modern Cryptography}
+
+The goal of cryptography is to offer fast computations one way while making the reverse extremely complex. In modern cryptography there are two types of systems which are able to do this: asymmetric and symmetric encryption systems. Asymmetric cryptography allows for the secure communication between multiple parties, commonly known as public key cryptography. Symmetric encryption enables the encryption of data through a secret key. Both of these type of encryptions have become standards with the National Institute of Standards and Technology, proving how resilient they are against today's computers.
+
+\subsection{Asymmetric ciphers}
+
+ Public key cryptography systems, such as RSA, rely on the fact that factoring two extremely large prime numbers is very slow on current computers while multiplying the two numbers is simple and quick to compute. In fact attacking RSA is so slow that DigiCert claims cracking a 2048-bit key will take a modern computer over 6.4 quadrillion years to break \cite{dig}. However this will not always be the case, especially as we enter a quantum world.
+
+\begin{figure}[h]
+    \begin{center}
+        \adjincludegraphics[width=0.75\textwidth]{images/rsa.png}
+        \caption{RSA Encryption/Decryption Algorithm \cite{rsa}}
+        \label{fig:rsa}
+    \end{center}
+\end{figure}
+
+\newpage
+
+Figure 1 demonstrates that when generating the modulus \textit{n} for RSA two extremely large prime numbers known as P and Q are generated. In order to break RSA an attacker would need to determine the the prime factors which were used to generate n. The current standard is to use 2048-bits with RSA which is known to be secure since up to this point the highest number which has been factored was 768 bits long, which was achieve in 2009. RSA-1024 offers 1000 times more security that 768 bits and even RSA-1024 is considered obsolete at this point.
+
+\subsection{Symmetric ciphers}
+
+The second set of cryptographic algorithms used in modern cryptography are known as symmetric ciphers. Symmetric ciphers take an input and a secret key to produce an encrypted output. Unlike public key cryptography the key size required is much smaller to produce the same amount of security. In today's standards AES-128 is the recommended level of encryption to use for storage of documents securely, and would take approximately one billion billion years for a modern computer to crack \cite{aes}. In AES when a brute force attacked is performed, in the worst case scenario $2^{128}$ keys would need to be checked, something which is not possible in a reasonable amount of time with modern technology.
+
+\subsection{Security comparison}
+
+As you may have seen, asymmetric ciphers require many more bits to provide the same amount of security. This is due to the nature of generating a modulus. Unfortunately the more bits required the longer encryption takes, thus defeating the purpose of fast one way computations.
+
+\begin{table}[!h]
+    \caption{Asymmetric vs Symmetric Key Comparison \cite[p.~306]{textbook}}
+    \label{table:keys}
+    \begin{center}
+        \begin{tabular}{|c|c|}
+            \hline
+                \textbf{Symmetric Key Size} & \textbf{RSA Modulus}\\\hline
+                80 & 1024\\
+                112 & 2048\\
+                128 & 3072\\
+                192 & 7680\\
+                256 & 15360\\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{table}
+
+Table 1 demonstrates how rapidly the RSA modulus grows in comparison to a symmetric key size. In the modern era of computers this doesn't matter much since even with the smaller amount of bits we're still offered billions of years of security for both of these keys to be cracked. However these key sizes will come into play when analyzing them in a post quantum world.
+
+\section{Modern Cryptography in a Quantum World}
+
+Once again it is important to analyze how both symmetric and asymmetric ciphers will hold up in a quantum world. However before we can analyze the security of these two ciphers one must understand the basics of the theory behind a quantum computer.
+
+\subsection{What is "Quantum"?}
+
+The basis of quantum computing revolves around the ability to analyze data in multiple states rather than just an individual 1 or 0 as seen in modern computers. Quantum states are represented through quantum bits which are more commonly referred to as qubits. Qubits have the ability to store much more information at once while requiring much less energy to manipulate \cite{qubits}. Essentially the information which can be stored in one qubit is much more than that of a bit in a classical computer.
+
+\begin{figure}[h]
+    \begin{center}
+        \adjincludegraphics[width=0.75\textwidth]{images/bit-qubit.png}
+        \caption{Classical Bit vs. Qubit \cite{qubit}}
+        \label{fig:qubit}
+    \end{center}
+\end{figure}
+
+Figure 2 demonstrates how a qubit is able to store much more information than a single bit in a classical computer. Ultimately a qubit can simultaneously represent a zero and a one which greatly improves the time for complex calculations. This ability to analyze multiple states is what will ultimately break modern cryptography. Now that there is a basic understanding of how a quantum computer stores information it is possible to determine how modern algorithms hold up in a quantum world.
+
+\textit{See appendix A.1 for an example of a quantum computer being used for Artificial Intelligence research at Google.}
+
+\subsection{Modern cryptography in a quantum world}
+
+Once again it is important to analyze both asymmetric and symmetric algorithms in a post quantum world. This will allow us to truly understand the impact quantum will have on modern day cryptography. Two key quantum algorithms will be analyzed to determine their impact on modern cryptography.
+
+\subsubsection{Asymmetric ciphers}
+
+Recalling how asymmetric ciphers work they rely on the principal that factoring is extremely difficult for modern computers to calculate, running in exponential time. Theoretically, in quantum computing factoring becomes much easier, so much so that it goes from exponential time to polynomial time. The algorithm which will break RSA in a true post-quantum world is known as Shor's algorithm \cite{shor}.
+
+Without going into too much detail, Peter Shor was able convert the problem of factoring a number into a quantum algorithm. Shor's algorithm works by converting factoring into a period problem, which can be done on a classical computer, and then finding the period using the existing quantum Fourier transform \cite{shor}. With Shor's algorithm RSA is rendered useless since the problem was taken from exponential time to polynomial time thus being solvable in a reasonable amount of real-time.
+
+\begin{figure}[h]
+    \begin{center}
+        \adjincludegraphics[width=1\textwidth]{images/shorspeed.png}
+        \caption{Shor's Algorithm vs Classical Algorithm \cite{shorspeedup}}
+        \label{fig:shor}
+    \end{center}
+\end{figure}
+
+Figure 3 demonstrates how Shor's algorithm is able to greatly increase the speed at which factoring is done. Thus with Shor's algorithm todays standard for asymmetric communications will become useless in a truly quantum world. Thankfully at this point the quantum machines are not stable enough, nor do they have enough qubits to properly implement Shor's algorithm.
+
+\subsubsection{Symmetric ciphers}
+
+In comparison to asymmetric ciphers, symmetric ciphers such as AES stand a much better chance in the quantum space. When stated earlier the worst case scenario in classical computing was that the entire key space of AES would require searching through a brute force attack. For example AES-128 would require $2^{128}$ operations to find the key.
+
+In a quantum world Grover's algorithm can be applied to reduce that key space by a factor of 2. Thus AES-128 essentially become $2^{64}$ in the worst case, which is not considered secure by today's standards\cite{grovers}. However this problem is easily solved by increasing the size of the key, for example using AES-256 now would be like using AES-128 in a quantum world. Recall that AES-128 takes billions of billions of years to crack thus symmetric ciphers are much more resilient to quantum attacks. NISTS's recommendation is to use larger keys on symmetric ciphers when moving to the quantum space \cite{nistplan}.
+
+\section{Post-Quantum Cryptography Progress}
+
+As it stands right now quantum is such a new field that there is no single solution to cryptography in a post-quantum era. Currently the National Institute of Standards and Technology are exploring various algorithms to produce the first standard of post-quantum cryptographic algorithms.
+
+\begin{table}[!h]
+    \caption{NIST Post-Quantum Standard Research Timeline \cite{nist}}
+    \label{table:keys}
+    \begin{center}
+        \begin{tabular}{|c|c|}
+            \hline
+                \textbf{Date} & \\\hline
+                Dec 20, 2016 &  Formal Call for Proposals\\\hline
+                Nov 30, 2017 & Deadline for submissions\\\hline
+                Early 2018 & Workshop - Submitter's Presentations\\\hline
+                3-5 years & Analyze Proposals\\\hline
+                2 years later & Draft Standards\\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{table}
+
+So, as seen in Table 2, there is no standard algorithm yet. In fact researchers are only just beginning to prepare for security in a post quantum world. There is still plenty of research which needs to be conducted before there is an algorithm which is deemed strong enough and has been thoroughly tested enough to be considered secure on a quantum computer.
+
+There has been some research conducted into lattice based cryptography to replace modern public key cryptography. However these approaches to replacing modern cryptography are too new to fully determine if they would be able to stand up to a post-quantum world \cite{lattice}. There is still plenty of research being conducted around lattice based cryptography.
+
+\section{Conclusion}
+
+Cryptography is essential to our daily lives and as computers evolve the algorithms to keep our data secure must also evolve. Unfortunately as it stands right now quantum computers will likely break modern cryptography. A new form of asymmetric ciphers must be developed to ensure a secure post-quantum era. Thankfully proper implementations quantum computing which may be capable of breaking modern cryptography are still a while away.
+
+Currently NIST is researching standards to replace modern cryptography so once a quantum computing is around there will be algorithms which exist to keep communications and data secure. Furthermore not all algorithms will be broken, for example NIST recommends just increasing the key size for AES from 128 to 256. The proper steps are being taken to ensure when quantum computing is common the quantum cryptographic algorithms will also be common.
+
+\printbibliography
+\printappendix
+
+\subsection{Google's Quantum Computer}
+
+\noindent It is cool to see the progress of quantum computers in today's age. Currently there is a race for quantum computing and while there isn't any perfect stable solution yet there has been quite a bit of progress. IBM offers 20 qubit cloud clusters for people to test their algorithms against while Google is working with NASA to perform AI research using their quantum computer.
+
+\begin{center}
+    \adjincludegraphics[width=1\textwidth]{images/google.png}
+    Google's Quantum Computer being used for research in AI \cite{google}
+\end{center}
+
+\end{document}
